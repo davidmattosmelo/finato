@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    container_name: api_boletos_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - INTER_CLIENT_ID=${INTER_CLIENT_ID}
+      - INTER_CLIENT_SECRET=${INTER_CLIENT_SECRET}
+      - INTER_CERT_PATH=/code/certs/inter_cert.crt
+      - INTER_KEY_PATH=/code/certs/inter_key.key
+      - DATABASE_URL=sqlite:///./sistema_boletos.db
+    volumes:
+      - ./backend:/code
+      - ./certs:/code/certs
+
+  frontend:
+    build: ./frontend
+    container_name: ui_boletos_react
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
